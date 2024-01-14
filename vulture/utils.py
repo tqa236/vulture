@@ -32,10 +32,7 @@ def _safe_eval(node, default):
     """
     if isinstance(node, ast.BoolOp):
         results = [_safe_eval(value, default) for value in node.values]
-        if isinstance(node.op, ast.And):
-            return all(results)
-        else:
-            return any(results)
+        return all(results) if isinstance(node.op, ast.And) else any(results)
     elif isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
         return not _safe_eval(node.operand, not default)
     else:

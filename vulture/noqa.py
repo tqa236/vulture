@@ -31,8 +31,7 @@ def _parse_error_codes(match):
 def parse_noqa(code):
     noqa_lines = defaultdict(set)
     for lineno, line in enumerate(code, start=1):
-        match = NOQA_REGEXP.search(line)
-        if match:
+        if match := NOQA_REGEXP.search(line):
             for error_code in _parse_error_codes(match):
                 error_code = NOQA_CODE_MAP.get(error_code, error_code)
                 noqa_lines[error_code].add(lineno)

@@ -9,10 +9,9 @@ import setuptools
 def find_version(*parts):
     here = pathlib.Path(__file__).parent
     version_file = here.joinpath(*parts).read_text()
-    version_match = re.search(
+    if version_match := re.search(
         r"^__version__ = ['\"]([^'\"]*)['\"]$", version_file, re.M
-    )
-    if version_match:
+    ):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 

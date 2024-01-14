@@ -12,7 +12,6 @@ def get_first_line_number(node):
     also don't need it's decorators), we return the lineno of the first
     decorator, if there are any.
     """
-    decorators = getattr(node, "decorator_list", [])
-    if decorators:
+    if decorators := getattr(node, "decorator_list", []):
         return decorators[0].lineno
     return node.lineno

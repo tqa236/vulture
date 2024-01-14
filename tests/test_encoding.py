@@ -30,7 +30,7 @@ pass
 def test_non_utf8_encoding(v, tmp_path):
     code = ""
     name = "non_utf8"
-    non_utf_8_file = tmp_path / (name + ".py")
+    non_utf_8_file = tmp_path / f"{name}.py"
     with open(non_utf_8_file, mode="wb") as f:
         f.write(codecs.BOM_UTF16_LE)
         f.write(code.encode("utf_16_le"))
@@ -40,7 +40,7 @@ def test_non_utf8_encoding(v, tmp_path):
 
 def test_utf8_with_bom(v, tmp_path):
     name = "utf8_bom"
-    filepath = tmp_path / (name + ".py")
+    filepath = tmp_path / f"{name}.py"
     # utf8_sig prepends the BOM to the file.
     filepath.write_text("", encoding="utf-8-sig")
     v.scavenge([filepath])

@@ -170,13 +170,10 @@ class Item:
         filename = utils.format_path(self.filename)
         if self.typ == "unreachable_code":
             return f"# {self.message} ({filename}:{self.first_lineno})"
-        else:
-            prefix = ""
-            if self.typ in ["attribute", "method", "property"]:
-                prefix = "_."
-            return "{}{}  # unused {} ({}:{:d})".format(
-                prefix, self.name, self.typ, filename, self.first_lineno
-            )
+        prefix = "_." if self.typ in ["attribute", "method", "property"] else ""
+        return "{}{}  # unused {} ({}:{:d})".format(
+            prefix, self.name, self.typ, filename, self.first_lineno
+        )
 
     def _tuple(self):
         return (self.filename, self.first_lineno, self.name)
@@ -258,7 +255,7 @@ class Vulture(ast.NodeVisitor):
 
     def scavenge(self, paths, exclude=None):
         def prepare_pattern(pattern):
-            if not any(char in pattern for char in "*?["):
+            if all(char not in pattern for char in "*?["):
                 pattern = f"*{pattern}*"
             return pattern
 
@@ -290,7 +287,7 @@ class Vulture(ast.NodeVisitor):
 
         unique_imports = {item.name for item in self.defined_imports}
         for import_name in unique_imports:
-            path = Path("whitelists") / (import_name + "_whitelist.py")
+            path = Path("whitelists") / f"{import_name}_whitelist.py"
             if exclude_path(path):
                 self._log("Excluded whitelist:", path)
             else:
@@ -662,7 +659,7 @@ class Vulture(ast.NodeVisitor):
             self.used_names.add(kwd_attr)
 
     def visit(self, node):
-        method = "visit_" + node.__class__.__name__
+        method = f"visit_{node.__class__.__name__}"
         visitor = getattr(self, method, None)
         if self.verbose:
             lineno = getattr(node, "lineno", 1)
